@@ -49,10 +49,11 @@ def create_releases_hosting_provider():
 
 logger.info("collecting release metadata")
 metadata = get_metadata()
-logger.info("build metadata: %s", metadata)
 
 logger.info("updating metadata with user-specified values (if any)")
 update_metadata_with_user_specified_data(metadata)
+
+logger.info("build metadata: %s", metadata)
 
 # TODO: support uploading to more than one provider
 releases_hosting_provider = create_releases_hosting_provider()
