@@ -20,7 +20,7 @@ This tool supports various build systems. Build system implementations are used 
 
 To use the tool with [GitHub actions](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/about-releases), all you have to do is to provide `GITHUB_TOKEN` in the environment of your upload step.
 
-The tool will by default upload files to *GitHub releases*.
+The tool can easily upload files to *GitHub releases* if you make the `GITHUB_TOKEN` secret available as environment variable.
 
 An example pipeline step look like this:
 
