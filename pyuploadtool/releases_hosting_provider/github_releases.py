@@ -5,7 +5,7 @@ from github import Github, UnknownObjectException
 from .base import ReleasesHostingProviderBase
 from .. import ReleaseMetadata
 from ..exceptions import PyUploadtoolError
-from ..logger import make_logger
+from ..logging import make_logger
 
 
 class GitHubReleases(ReleasesHostingProviderBase):

@@ -1,22 +1,16 @@
 """
 Commandline interface.
 """
-import os
+
 import sys
 
-import coloredlogs
 
 from pyuploadtool import ReleaseMetadata, ReleasesHostingProviderFactory
 from pyuploadtool.build_systems import BuildSystemFactory
-from pyuploadtool.logger import make_logger
+from pyuploadtool.logging import make_logger, setup_logging
 
-# set up logging
-if "DEBUG" in os.environ:
-    loglevel = "DEBUG"
-else:
-    loglevel = "INFO"
 
-coloredlogs.install(level=loglevel, fmt="%(asctime)s,%(msecs)03d %(name)s [%(levelname)s] %(message)s")
+setup_logging()
 
 logger = make_logger("cli")
 

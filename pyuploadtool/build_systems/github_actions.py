@@ -4,7 +4,7 @@ import re
 import github
 
 from . import BuildSystemBase, BuildSystemError
-from ..logger import make_logger
+from ..logging import make_logger
 from ..metadata import ReleaseMetadata
 
 

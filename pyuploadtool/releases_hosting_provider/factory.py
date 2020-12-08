@@ -1,7 +1,7 @@
 import os
 
 from . import ReleasesHostingProviderBase, GitHubReleases, ReleaseHostingProviderError
-from ..logger import make_logger
+from ..logging import make_logger
 
 
 class ReleasesHostingProviderFactory:

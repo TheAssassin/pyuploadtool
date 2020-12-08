@@ -1,7 +1,7 @@
 import os
 
 from . import GitHubActions, BuildSystemError, BuildSystemBase
-from ..logger import make_logger
+from ..logging import make_logger
 
 
 class BuildSystemFactory:
