@@ -15,6 +15,7 @@ class ReleaseMetadata:
         build_log_url: str = None,
         unique_build_id: str = None,
         repository_slug: str = None,
+        commit: str = None,
     ):
         # name of the tag to be created
         self.tag_name = tag_name
@@ -33,9 +34,15 @@ class ReleaseMetadata:
         # this is required by releases hosting platforms such as GitHub releases
         self.repository_slug = repository_slug
 
+        # Git commit hash
+        self.commit = commit
+
     def __repr__(self):
         args = ", ".join(
-            (f'{i}="{getattr(self, i)}"' for i in ("tag_name", "release_name", "build_log_url", "repository_slug"))
+            (
+                f'{i}="{getattr(self, i)}"'
+                for i in ("tag_name", "release_name", "build_log_url", "repository_slug", "commit")
+            )
         )
 
         return f"<{self.__class__.__name__}({args})>"
