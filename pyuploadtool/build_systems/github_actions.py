@@ -1,4 +1,5 @@
 import os
+import re
 
 import github
 
@@ -35,12 +36,12 @@ class GitHubActions(BuildSystemBase):
         return GitHubActions(github_client, repository, run_id, event_name, ref)
 
     def update_release_metadata(self, metadata: ReleaseMetadata):
-        # TODO: support custom names and tags
-        # TODO: update existing release if there's one for the current commit already (travis ci workflow)
+        # extract tag name, if possible (for release builds)
+        tag_match = re.match(r"refs/tags/(.+)", self.ref)
+        if tag_match:
+            metadata.tag_name = tag_match.group(1)
+            metadata.release_name = f"Release {metadata.tag_name}"
 
-        # not using "latest", as this value is reserved by GitHub
-        metadata.tag_name = "continuous"
-        metadata.release_name = "Continuous build"
         metadata.build_log_url = f"https://github.com/{self.repository}/runs/{self.run_id}"
         metadata.unique_build_id = str(self.run_id)
         metadata.repository_slug = self.repository

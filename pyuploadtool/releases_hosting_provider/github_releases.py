@@ -27,6 +27,16 @@ class GitHubReleases(ReleasesHostingProviderBase):
     def create_release(self, metadata: ReleaseMetadata, artifacts):
         repo = self.github_client.get_repo(metadata.repository_slug)
 
+        # TODO: update existing release if there's one for the current commit already (travis ci workflow)
+
+        # fallback values (for continuous release setup)
+        if not metadata.tag_name:
+            self.logger.warning("tag name not set, assuming this is a continuous release setup")
+
+            # not using "latest", as this value is reserved by GitHub
+            metadata.tag_name = "continuous"
+            metadata.release_name = "Continuous build"
+
         try:
             old_release = repo.get_release(metadata.tag_name)
         except UnknownObjectException:
