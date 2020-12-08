@@ -9,7 +9,6 @@ def setup_logging():
     force_colors = False
 
     if "DEBUG" in os.environ:
-        print("woop")
         loglevel = logging.DEBUG
 
     if "FORCE_COLORS" in os.environ:
