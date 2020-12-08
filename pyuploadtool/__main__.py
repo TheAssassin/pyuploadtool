@@ -39,9 +39,9 @@ def get_metadata():
     return metadata
 
 
-def create_releases_hosting_provider():
+def get_release_hosting_providers():
     # try to guess the releases hosting provider from the environment, too
-    logger.debug("creating release hosting provider instance from build environment")
+    logger.debug("detecting available release hosting providers from build environment")
     releases_hosting_provider = ReleasesHostingProviderFactory.from_environment()
 
     return releases_hosting_provider
@@ -55,9 +55,17 @@ update_metadata_with_user_specified_data(metadata)
 
 logger.info("build metadata: %s", metadata)
 
-# TODO: support uploading to more than one provider
-releases_hosting_provider = create_releases_hosting_provider()
-logger.info("creating release to provider %s", releases_hosting_provider.name)
-releases_hosting_provider.create_release(metadata, artifacts)
+providers = get_release_hosting_providers()
+
+if not providers:
+    # there's no point in considering "no providers found" a success
+    logger.error("could not detect any release hosting providers")
+    sys.exit(1)
+
+logger.info("available release hosting providers: %s", ", ".join((p.name for p in providers)))
+
+for provider in get_release_hosting_providers():
+    logger.info("creating release on hosting provider %s", provider.name)
+    provider.create_release(metadata, artifacts)
 
 logger.info("done!")
