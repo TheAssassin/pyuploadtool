@@ -43,7 +43,9 @@ class WebDAV(ReleasesHostingProviderBase):
         # if the user specifies a release name via env vars, we prefer that one
         if self.release_name:
             self.logger.info(f'using user-specified release name "{self.release_name}"')
-            base_url = urljoin(self.url, quote(self.release_name))
+            base_url = self.url
+            base_url += "/"
+            base_url = urljoin(base_url, quote(self.release_name))
             base_url += "/"
 
         elif metadata.pipeline_name and metadata.pipeline_run_number:
