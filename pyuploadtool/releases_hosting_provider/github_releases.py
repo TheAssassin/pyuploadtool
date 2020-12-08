@@ -2,6 +2,7 @@ import os
 
 from github import Github, UnknownObjectException
 
+from . import ReleaseHostingProviderError
 from .base import ReleasesHostingProviderBase
 from .. import ReleaseMetadata
 from ..exceptions import PyUploadtoolError
@@ -20,7 +21,7 @@ class GitHubReleases(ReleasesHostingProviderBase):
         try:
             github_client = Github(os.environ["GITHUB_TOKEN"])
         except KeyError as e:
-            raise PyUploadtoolError(f"could not find required environment variable: {e.args[0]}")
+            raise ReleaseHostingProviderError(f"could not find required environment variable: {e.args[0]}")
 
         return GitHubReleases(github_client)
 
