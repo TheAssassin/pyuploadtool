@@ -42,7 +42,7 @@ class GitHubReleases(ReleasesHostingProviderBase):
         # this usually happens with continuous releases
         # deleting the tag is safe in this case
         for existing_tag in repo.get_tags():
-            if existing_tag.name == metadata.tag_name and existing_tag.commit != metadata.commit:
+            if existing_tag.name == metadata.tag_name and existing_tag.commit.sha != metadata.commit:
                 self.logger.warning(f"recreating tag {metadata.tag_name} for commit {metadata.commit}")
 
                 self.logger.debug(f"deleting tag {existing_tag.name}")
@@ -50,17 +50,11 @@ class GitHubReleases(ReleasesHostingProviderBase):
                 existing_tag_ref.delete()
 
         try:
-            old_release = repo.get_release(metadata.tag_name)
+            release = repo.get_release(metadata.tag_name)
         except UnknownObjectException:
-            old_release = None
-
-        if old_release is not None:
-            self.logger.warning(f"deleting existing release for tag {metadata.tag_name}")
-            old_release.delete_release()
+            release = None
 
         message = f"Build log: {metadata.build_log_url}"
-
-        self.logger.info(f'drafting new release "{metadata.release_name}" for tag "{metadata.tag_name}"')
 
         # for some annoying reason, you have to specify all the metadata both when drafting _and_ creating the release
         release_data = dict(
@@ -70,15 +64,38 @@ class GitHubReleases(ReleasesHostingProviderBase):
             target_commitish=metadata.commit,
         )
 
-        draft = repo.create_git_release(tag=metadata.tag_name, draft=True, **release_data)
+        # in case we have multiple jobs build and upload in parallel, the release may already have been created by
+        # one job
+        # therefore, we want to make sure we only (re)create the release if it is not based on the commit we're
+        # processing right now
+        if release is not None:
+            if release.target_commitish == metadata.commit:
+                self.logger.info(
+                    f'found an existing release called "{metadata.release_name}" for commit "{metadata.commit}"'
+                )
+            else:
+                self.logger.warning(f"deleting existing release for tag {metadata.tag_name}")
+                release.delete_release()
+                release = None
+
+        if release is None:
+            self.logger.info(f'drafting new release "{metadata.release_name}" for tag "{metadata.tag_name}"')
+            release = repo.create_git_release(tag=metadata.tag_name, draft=True, **release_data)
 
         for path in artifacts:
             self.logger.info(f'uploading artifact "{path}"')
-            draft.upload_asset(path)
+
+            # in case there's an existing artifact with the same filename, we need to delete the old file first
+            for asset in release.get_assets():
+                if asset.name == os.path.basename(path):
+                    self.logger.info(f'deleting existing asset {asset.id} with name "{asset.name}"')
+                    asset.delete_asset()
+
+            release.upload_asset(path)
 
         self.logger.info("publishing release")
         # for some annoying reason, you have to re-provide all options
-        draft.update_release(draft=False, **release_data)
+        release.update_release(draft=False, **release_data)
 
     @property
     def name(self):
