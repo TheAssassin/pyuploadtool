@@ -56,6 +56,9 @@ class GitHubReleases(ReleasesHostingProviderBase):
 
         message = f"Build log: {metadata.build_log_url}"
 
+        if metadata.release_description is not None:
+            message = f"{metadata.release_description}\n\n{message}"
+
         # for some annoying reason, you have to specify all the metadata both when drafting _and_ creating the release
         release_data = dict(
             name=metadata.release_name,

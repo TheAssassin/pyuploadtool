@@ -5,10 +5,13 @@ Commandline interface.
 import sys
 
 
-from pyuploadtool import ReleaseMetadata, ReleasesHostingProviderFactory
-from pyuploadtool.build_systems import BuildSystemFactory
+from pyuploadtool import (
+    ReleaseMetadata,
+    ReleasesHostingProviderFactory,
+    update_metadata_with_user_specified_data,
+    BuildSystemFactory,
+)
 from pyuploadtool.logging import make_logger, setup_logging
-
 
 setup_logging()
 
@@ -47,6 +50,9 @@ def create_releases_hosting_provider():
 logger.info("collecting release metadata")
 metadata = get_metadata()
 logger.info("build metadata: %s", metadata)
+
+logger.info("updating metadata with user-specified values (if any)")
+update_metadata_with_user_specified_data(metadata)
 
 # TODO: support uploading to more than one provider
 releases_hosting_provider = create_releases_hosting_provider()

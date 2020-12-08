@@ -1,3 +1,6 @@
+import os
+
+
 class ReleaseMetadata:
     """
     Data object holding all metadata about a release that can be gathered from, e.g., a build system's environment.
@@ -12,6 +15,7 @@ class ReleaseMetadata:
         self,
         tag_name: str = None,
         release_name: str = None,
+        release_description: str = None,
         build_log_url: str = None,
         unique_build_id: str = None,
         repository_slug: str = None,
@@ -22,6 +26,10 @@ class ReleaseMetadata:
 
         # name of the release to be created (might be the same as tag_name)
         self.release_name = release_name
+
+        # optional release description
+        # will be prepended to the auto-generated description for release hosting platforms that support descriptions
+        self.release_description = release_description
 
         # URL to build log
         self.build_log_url = build_log_url
@@ -46,3 +54,18 @@ class ReleaseMetadata:
         )
 
         return f"<{self.__class__.__name__}({args})>"
+
+
+def update_metadata_with_user_specified_data(metadata: ReleaseMetadata):
+    """
+    Update metadata with values from environment variables users may specify. This can be used to overwrite
+    auto-detected values or provide additional data the auto detection can't determine itself.
+
+    :param metadata: metadata to update
+    """
+
+    # probonopd/uploadtool compatibility
+    try:
+        metadata.description = os.environ["UPLOADTOOL_BODY"]
+    except KeyError:
+        pass
