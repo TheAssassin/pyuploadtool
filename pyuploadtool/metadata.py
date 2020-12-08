@@ -20,6 +20,8 @@ class ReleaseMetadata:
         unique_build_id: str = None,
         repository_slug: str = None,
         commit: str = None,
+        pipeline_name: str = None,
+        pipeline_run_number: str = None,
     ):
         # name of the tag to be created
         self.tag_name = tag_name
@@ -45,11 +47,25 @@ class ReleaseMetadata:
         # Git commit hash
         self.commit = commit
 
+        # build pipeline metadata
+        # used to determine the release directory name in hosting providers such as WebDAV
+        self.pipeline_name = pipeline_name
+        # the run number shall be monotonically increasing, and start at 0 or 1
+        self.pipeline_run_number = pipeline_run_number
+
     def __repr__(self):
         args = ", ".join(
             (
                 f'{i}="{getattr(self, i)}"'
-                for i in ("tag_name", "release_name", "build_log_url", "repository_slug", "commit")
+                for i in (
+                    "tag_name",
+                    "release_name",
+                    "build_log_url",
+                    "repository_slug",
+                    "commit",
+                    "pipeline_name",
+                    "pipeline_run_number",
+                )
             )
         )
 

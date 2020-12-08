@@ -11,7 +11,7 @@ from ..metadata import ReleaseMetadata
 class GitHubActions(BuildSystemBase):
     logger = make_logger("github_actions")
 
-    def __init__(self, github_client, repository, run_id, event_name, ref, sha):
+    def __init__(self, github_client, repository, run_id, event_name, ref, sha, workflow, run_number):
         # dependency injection
         self.github_client: github.Github = github_client
 
@@ -20,6 +20,8 @@ class GitHubActions(BuildSystemBase):
         self.event_name = event_name
         self.ref = ref
         self.commit = sha
+        self.workflow = workflow
+        self.run_number = run_number
 
     @classmethod
     def from_environment(cls):
@@ -30,12 +32,15 @@ class GitHubActions(BuildSystemBase):
             event_name = os.environ["GITHUB_EVENT_NAME"]
             ref = os.environ["GITHUB_REF"]
             sha = os.environ["GITHUB_SHA"]
+            workflow = os.environ["GITHUB_WORKFLOW"]
+            run_number = os.environ["GITHUB_RUN_NUMBER"]
+
         except KeyError as e:
             raise BuildSystemError(f"Could not find environment variable ${e.args[0]}")
 
         github_client = github.Github(token)
 
-        return GitHubActions(github_client, repository, run_id, event_name, ref, sha)
+        return GitHubActions(github_client, repository, run_id, event_name, ref, sha, workflow, run_number)
 
     def update_release_metadata(self, metadata: ReleaseMetadata):
         # extract tag name, if possible (for release builds)
@@ -48,3 +53,5 @@ class GitHubActions(BuildSystemBase):
         metadata.unique_build_id = str(self.run_id)
         metadata.repository_slug = self.repository
         metadata.commit = self.commit
+        metadata.pipeline_name = self.workflow
+        metadata.pipeline_run_number = self.run_number
