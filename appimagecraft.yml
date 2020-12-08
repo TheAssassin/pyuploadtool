@@ -1,0 +1,49 @@
+version: 1
+
+project:
+  name: com.github.theassassin.pyuploadtool
+  version_command: cd "$PROJECT_ROOT" && git rev-parse --short HEAD
+
+build:
+  null:
+
+scripts:
+  post_build:
+    - |2
+      cat > "$BUILD_DIR"/pyuploadtool.desktop <<\EOF
+      [Desktop Entry]
+      Name=pyuploadtool
+      Type=Application
+      Icon=pyuploadtool
+      Exec=pyuploadtool
+      NoDisplay=true
+      Terminal=true
+      Categories=Utility;
+      EOF
+    - |2
+      cat > "$BUILD_DIR"/AppRun.sh <<\EOF
+      #! /bin/bash
+
+      this_dir=$(dirname "$0")
+
+      # add own bin dir as fallback
+      # might come in handy if readelf binary is missing on the system (not sure if that's even possible, though)
+      # also makes using bundled shellcheck easier
+      export PATH="$PATH":"$this_dir"/usr/bin
+
+      "$this_dir"/usr/bin/python -m pyuploadtool "$@"
+      EOF
+    - chmod +x AppRun.sh
+    - touch "$BUILD_DIR"/pyuploadtool.svg
+
+
+appimage:
+  linuxdeploy:
+    plugins:
+      - conda
+    extra_args: -i "$BUILD_DIR"/pyuploadtool.svg -d "$BUILD_DIR"/pyuploadtool.desktop --custom-apprun "$BUILD_DIR"/AppRun.sh -e $(which shellcheck)
+    environment:
+      PIP_REQUIREMENTS: .
+    raw_environment:
+      - PIP_WORKDIR="$PROJECT_ROOT"
+      - OUTPUT=pyuploadtool-"$ARCH".AppImage

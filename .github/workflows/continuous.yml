@@ -1,0 +1,41 @@
+name: Continuous release
+
+on: push
+
+jobs:
+  build-appimage:
+    name: Build AppImage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build AppImage
+        run: |
+            wget https://github.com/TheAssassin/appimagecraft/releases/download/continuous/appimagecraft-x86_64.AppImage
+            chmod +x appimagecraft-x86_64.AppImage
+            ./appimagecraft-x86_64.AppImage
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: AppImage
+          path: pyuploadtool*.AppImage*
+
+  upload:
+    name: Create release and upload artifacts
+    needs:
+      - build-appimage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+      - name: Inspect directory after downloading artifacts
+        run: ls -alFR
+      - name: Create release and upload artifacts
+        uses: marvinpinto/action-automatic-releases@latest
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "continuous"
+          prerelease: true
+          title: "Continuous build"
+          files: |
+            **/pyuploadtool*.AppImage*
