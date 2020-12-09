@@ -32,6 +32,12 @@ class GitHubReleases(ReleasesHostingProviderBase):
 
         # fallback values (for continuous release setup)
         if not metadata.tag:
+            if metadata.branch != repo.default_branch:
+                self.logger.warning(
+                    f'not creating release for branch "{metadata.branch}" as it is not the default branch "{repo.default_branch}"'
+                )
+                return
+
             self.logger.warning("tag name not set, assuming this is a continuous release setup")
 
             # not using "latest", as this value is reserved by GitHub
