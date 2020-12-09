@@ -31,27 +31,32 @@ class GitHubReleases(ReleasesHostingProviderBase):
         prerelease = False
 
         # fallback values (for continuous release setup)
-        if not metadata.tag_name:
+        if not metadata.tag:
             self.logger.warning("tag name not set, assuming this is a continuous release setup")
 
             # not using "latest", as this value is reserved by GitHub
-            metadata.tag_name = "continuous"
+            metadata.tag = "continuous"
             metadata.release_name = "Continuous build"
             prerelease = True
+
+        else:
+            if not metadata.release_name:
+                metadata.release_name = f"Release {metadata.tag}"
+                self.logger.info(f"automatically using tag name as release name: {metadata.release_name}")
 
         # recreate existing tag if it has the same name but is based on a different commit
         # this usually happens with continuous releases
         # deleting the tag is safe in this case
         for existing_tag in repo.get_tags():
-            if existing_tag.name == metadata.tag_name and existing_tag.commit.sha != metadata.commit:
-                self.logger.warning(f"recreating tag {metadata.tag_name} for commit {metadata.commit}")
+            if existing_tag.name == metadata.tag and existing_tag.commit.sha != metadata.commit:
+                self.logger.warning(f"recreating tag {metadata.tag} for commit {metadata.commit}")
 
                 self.logger.debug(f"deleting tag {existing_tag.name}")
                 existing_tag_ref = repo.get_git_ref(f"tags/{existing_tag.name}")
                 existing_tag_ref.delete()
 
         try:
-            release = repo.get_release(metadata.tag_name)
+            release = repo.get_release(metadata.tag)
         except UnknownObjectException:
             release = None
 
@@ -78,13 +83,13 @@ class GitHubReleases(ReleasesHostingProviderBase):
                     f'found an existing release called "{metadata.release_name}" for commit "{metadata.commit}"'
                 )
             else:
-                self.logger.warning(f"deleting existing release for tag {metadata.tag_name}")
+                self.logger.warning(f"deleting existing release for tag {metadata.tag}")
                 release.delete_release()
                 release = None
 
         if release is None:
-            self.logger.info(f'drafting new release "{metadata.release_name}" for tag "{metadata.tag_name}"')
-            release = repo.create_git_release(tag=metadata.tag_name, draft=True, **release_data)
+            self.logger.info(f'drafting new release "{metadata.release_name}" for tag "{metadata.tag}"')
+            release = repo.create_git_release(tag=metadata.tag, draft=True, **release_data)
 
         for path in artifacts:
             self.logger.info(f'uploading artifact "{path}"')

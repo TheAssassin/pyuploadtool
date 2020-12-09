@@ -13,7 +13,8 @@ class ReleaseMetadata:
 
     def __init__(
         self,
-        tag_name: str = None,
+        tag: str = None,
+        branch: str = None,
         release_name: str = None,
         release_description: str = None,
         build_log_url: str = None,
@@ -23,10 +24,13 @@ class ReleaseMetadata:
         pipeline_name: str = None,
         pipeline_run_number: str = None,
     ):
-        # name of the tag to be created
-        self.tag_name = tag_name
+        # name of the current tag
+        self.tag = tag
 
-        # name of the release to be created (might be the same as tag_name)
+        # name of the current branch (might not be available, e.g., when building on a tag)
+        self.branch = branch
+
+        # name of the release to be created (might be the same as tag_name, usually user-specified or auto-generated)
         self.release_name = release_name
 
         # optional release description
@@ -58,9 +62,12 @@ class ReleaseMetadata:
             (
                 f'{i}="{getattr(self, i)}"'
                 for i in (
-                    "tag_name",
+                    "tag",
+                    "branch",
                     "release_name",
+                    "release_description",
                     "build_log_url",
+                    "unique_build_id",
                     "repository_slug",
                     "commit",
                     "pipeline_name",

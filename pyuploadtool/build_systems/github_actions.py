@@ -39,10 +39,13 @@ class GitHubActions(BuildSystemBase):
 
     def update_release_metadata(self, metadata: ReleaseMetadata):
         # extract tag name, if possible (for release builds)
-        tag_match = re.match(r"(?:refs/)?tags/(.+)", self.ref)
-        if tag_match:
-            metadata.tag_name = tag_match.group(1)
-            metadata.release_name = f"Release {metadata.tag_name}"
+        branch_match = re.match(r"(?:refs/)?tags/(.+)", self.ref)
+        if branch_match:
+            metadata.tag = branch_match.group(1)
+
+        branch_match = re.match(r"(?:refs/)?heads/(.+)", self.ref)
+        if branch_match:
+            metadata.branch = branch_match.group(1)
 
         metadata.build_log_url = f"https://github.com/{self.repository}/runs/{self.run_id}"
         metadata.unique_build_id = str(self.run_id)
