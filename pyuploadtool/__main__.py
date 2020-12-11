@@ -64,7 +64,7 @@ if not providers:
 
 logger.info("available release hosting providers: %s", ", ".join((p.name for p in providers)))
 
-for provider in get_release_hosting_providers():
+for provider in providers:
     logger.info("creating release on hosting provider %s", provider.name)
     provider.create_release(metadata, artifacts)
 
