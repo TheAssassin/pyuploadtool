@@ -41,7 +41,8 @@ class WebDAV(ReleasesHostingProviderBase):
 
     def create_release(self, metadata: ReleaseMetadata, artifacts):
         # if the user specifies a release name via env vars, we prefer that one
-        if self.release_name:
+        # note: we permit an empty string to allow for uploading to the specified URL's root directory
+        if self.release_name is not None:
             self.logger.info(f'using user-specified release name "{self.release_name}"')
             base_url = self.url
             base_url += "/"
