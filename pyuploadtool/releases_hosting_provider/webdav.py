@@ -56,15 +56,22 @@ class WebDAV(ReleasesHostingProviderBase):
         # note: we permit an empty string to allow for uploading to the specified URL's root directory
         if self.release_name is not None:
             self.logger.info(f'using user-specified release name "{self.release_name}"')
-            base_url = f"{self.url}/{sanitize(self.release_name)}/"
+            target_directory = sanitize(self.release_name)
 
         elif metadata.pipeline_name and metadata.pipeline_run_number:
             target_directory = f"{sanitize(metadata.pipeline_name)}/{sanitize(metadata.pipeline_run_number)}"
-            self.logger.info(f'target directory: "{target_directory}"')
-            base_url = f"{self.url}/{target_directory}/"
 
         else:
-            raise ReleaseHostingProviderError("cannot determine release name")
+            raise ReleaseHostingProviderError("cannot determine base URL")
+
+        self.logger.info(f'target directory: "{target_directory}"')
+
+        # avoid consecutive / in URLs, as some webservers don't like these
+        while "//" in target_directory:
+            target_directory = target_directory.replace("//", "/")
+
+        base_url = f"{self.url}/{target_directory}"
+        base_url = base_url.rstrip("/")
 
         for path in artifacts:
             self.logger.info(f'uploading artifact "{path}"')
