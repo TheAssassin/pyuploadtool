@@ -1,5 +1,6 @@
 import os
-from urllib.parse import urljoin, quote
+import string
+from urllib.parse import quote
 
 import requests
 
@@ -40,23 +41,27 @@ class WebDAV(ReleasesHostingProviderBase):
         return WebDAV(url, session, release_name)
 
     def create_release(self, metadata: ReleaseMetadata, artifacts):
+        def sanitize(s):
+            out = []
+
+            for i in s:
+                if i in string.ascii_letters + string.digits + "_- ":
+                    out.append(s)
+                else:
+                    out.append("_")
+
+            return quote("".join(out))
+
         # if the user specifies a release name via env vars, we prefer that one
         # note: we permit an empty string to allow for uploading to the specified URL's root directory
         if self.release_name is not None:
             self.logger.info(f'using user-specified release name "{self.release_name}"')
-            base_url = self.url
-            base_url += "/"
-            base_url = urljoin(base_url, quote(self.release_name))
-            base_url += "/"
+            base_url = f"{self.url}/{sanitize(self.release_name)}/"
 
         elif metadata.pipeline_name and metadata.pipeline_run_number:
-            self.logger.info(f'target directory: "{metadata.pipeline_name}/{metadata.pipeline_run_number}"')
-            base_url = self.url
-            base_url += "/"
-            base_url = urljoin(base_url, quote(metadata.pipeline_name))
-            base_url += "/"
-            base_url = urljoin(base_url, quote(str(metadata.pipeline_run_number)))
-            base_url += "/"
+            target_directory = f"{sanitize(metadata.pipeline_name)}/{sanitize(metadata.pipeline_run_number)}"
+            self.logger.info(f'target directory: "{target_directory}"')
+            base_url = f"{self.url}/{target_directory}/"
 
         else:
             raise ReleaseHostingProviderError("cannot determine release name")
@@ -64,7 +69,7 @@ class WebDAV(ReleasesHostingProviderBase):
         for path in artifacts:
             self.logger.info(f'uploading artifact "{path}"')
 
-            artifact_url = urljoin(base_url, quote(os.path.basename(path)))
+            artifact_url = f"{base_url}/{quote(os.path.basename(path))}"
             with open(path, "rb") as f:
                 response = self.requests_session.put(artifact_url, data=f)
                 response.raise_for_status()
@@ -73,7 +78,7 @@ class WebDAV(ReleasesHostingProviderBase):
             build_info_filename = "build-info.txt"
             self.logger.info(f"uploading build log URL to {build_info_filename}")
             build_info = f"Build log: {metadata.build_log_url}\n"
-            build_info_url = urljoin(base_url, quote(build_info_filename))
+            build_info_url = f"{base_url}/{quote(build_info_filename)}"
             put_response = self.requests_session.put(build_info_url, data=build_info)
             put_response.raise_for_status()
 
