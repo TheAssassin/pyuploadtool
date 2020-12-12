@@ -46,7 +46,7 @@ class WebDAV(ReleasesHostingProviderBase):
 
             for i in s:
                 if i in string.ascii_letters + string.digits + "_- ":
-                    out.append(s)
+                    out.append(i)
                 else:
                     out.append("_")
 
