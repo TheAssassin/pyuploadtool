@@ -4,6 +4,7 @@ import re
 import github
 
 from . import BuildSystemBase, BuildSystemError
+from .. import BuildType
 from ..logging import make_logger
 from ..metadata import ReleaseMetadata
 
@@ -53,3 +54,13 @@ class GitHubActions(BuildSystemBase):
         metadata.commit = self.commit
         metadata.pipeline_name = self.workflow
         metadata.pipeline_run_number = self.run_number
+
+        event_name = self.event_name.lower()
+
+        # the create event can occur whenever a tag or branch is created
+        if event_name == "create" and metadata.tag:
+            metadata.build_type = BuildType.TAG
+        if event_name == "pull_request":
+            metadata.build_type = BuildType.PULL_REQUEST
+        if event_name == "push":
+            metadata.build_type = BuildType.PUSH

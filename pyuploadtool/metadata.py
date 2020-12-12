@@ -1,5 +1,7 @@
 import os
 
+from pyuploadtool import BuildType
+
 
 class ReleaseMetadata:
     """
@@ -23,6 +25,7 @@ class ReleaseMetadata:
         commit: str = None,
         pipeline_name: str = None,
         pipeline_run_number: str = None,
+        build_type: BuildType = None,
     ):
         # name of the current tag
         self.tag = tag
@@ -57,6 +60,11 @@ class ReleaseMetadata:
         # the run number shall be monotonically increasing, and start at 0 or 1
         self.pipeline_run_number = pipeline_run_number
 
+        # current build's type
+        if build_type is None:
+            build_type = BuildType.UNKNOWN
+        self.build_type = build_type
+
     def __repr__(self):
         args = ", ".join(
             (
@@ -72,6 +80,7 @@ class ReleaseMetadata:
                     "commit",
                     "pipeline_name",
                     "pipeline_run_number",
+                    "build_type",
                 )
             )
         )
