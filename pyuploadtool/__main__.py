@@ -20,6 +20,10 @@ logger = make_logger("cli")
 # TODO: use some real CLI library
 artifacts = sys.argv[1:]
 
+if not artifacts:
+    logger.error(f"Usage: {sys.argv[0]} <file> [<another file>...]")
+    sys.exit(1)
+
 
 def get_metadata():
     # create some metadata, which will be updated with the data from the build system
