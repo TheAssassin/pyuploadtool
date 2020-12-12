@@ -4,7 +4,7 @@ from github import Github, UnknownObjectException
 
 from . import ReleaseHostingProviderError
 from .base import ReleasesHostingProviderBase
-from .. import ReleaseMetadata
+from .. import ReleaseMetadata, BuildType
 from ..exceptions import PyUploadtoolError
 from ..logging import make_logger
 
@@ -31,24 +31,33 @@ class GitHubReleases(ReleasesHostingProviderBase):
         prerelease = False
 
         # fallback values (for continuous release setup)
-        if not metadata.tag:
+        if metadata.build_type == BuildType.PUSH:
             if metadata.branch != repo.default_branch:
                 self.logger.warning(
                     f'not creating release for branch "{metadata.branch}" as it is not the default branch "{repo.default_branch}"'
                 )
                 return
 
-            self.logger.warning("tag name not set, assuming this is a continuous release setup")
+            self.logger.warning("push to default branch, creating continuous release")
 
             # not using "latest", as this value is reserved by GitHub
             metadata.tag = "continuous"
             metadata.release_name = "Continuous build"
             prerelease = True
 
-        else:
+        elif metadata.build_type == BuildType.PULL_REQUEST:
+            self.logger.warning("not creating release as this is a pull request build")
+            return
+
+        elif metadata.build_type == BuildType.TAG:
+            self.logger.info("build of tag, creating regular release")
+
             if not metadata.release_name:
                 metadata.release_name = f"Release {metadata.tag}"
                 self.logger.info(f"automatically using tag name as release name: {metadata.release_name}")
+
+        else:
+            raise ReleaseHostingProviderError(f"unsupported build type: {metadata.build_type}")
 
         # recreate existing tag if it has the same name but is based on a different commit
         # this usually happens with continuous releases
