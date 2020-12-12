@@ -6,7 +6,7 @@ import requests
 
 from . import ReleaseHostingProviderError
 from .base import ReleasesHostingProviderBase
-from .. import ReleaseMetadata
+from .. import ReleaseMetadata, BuildType
 from ..logging import make_logger
 
 
@@ -51,6 +51,11 @@ class WebDAV(ReleasesHostingProviderBase):
                     out.append("_")
 
             return quote("".join(out))
+
+        # credentials would be missing anyway in a pull request build
+        if metadata.build_type == BuildType.PULL_REQUEST:
+            self.logger.warning("not uploading to server as this is a pull request build")
+            return
 
         # if the user specifies a release name via env vars, we prefer that one
         # note: we permit an empty string to allow for uploading to the specified URL's root directory
