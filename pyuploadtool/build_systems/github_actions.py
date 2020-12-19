@@ -1,8 +1,6 @@
 import os
 import re
 
-import github
-
 from . import BuildSystemBase, BuildSystemError
 from .. import BuildType
 from ..logging import make_logger

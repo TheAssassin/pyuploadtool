@@ -5,7 +5,6 @@ from github import Github, UnknownObjectException
 from . import ReleaseHostingProviderError
 from .base import ReleasesHostingProviderBase
 from .. import ReleaseMetadata, BuildType
-from ..exceptions import PyUploadtoolError
 from ..logging import make_logger
 
 
