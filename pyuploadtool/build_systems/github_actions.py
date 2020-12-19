@@ -58,7 +58,6 @@ class GitHubActions(BuildSystemBase):
         # the create event can occur whenever a tag or branch is created
         if event_name == "pull_request":
             metadata.build_type = BuildType.PULL_REQUEST
-
         elif event_name == "push":
             if metadata.tag:
                 metadata.build_type = BuildType.TAG

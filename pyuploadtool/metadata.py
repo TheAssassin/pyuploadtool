@@ -1,6 +1,7 @@
 import os
 
-from pyuploadtool import BuildType
+from . import BuildType
+from .changelog import Changelog
 
 
 class ReleaseMetadata:
@@ -26,6 +27,7 @@ class ReleaseMetadata:
         pipeline_name: str = None,
         pipeline_run_number: str = None,
         build_type: BuildType = None,
+        changelog: Changelog = None,
     ):
         # name of the current tag
         self.tag = tag
@@ -64,6 +66,9 @@ class ReleaseMetadata:
         if build_type is None:
             build_type = BuildType.UNKNOWN
         self.build_type = build_type
+
+        # changelog
+        self.changelog = changelog
 
     def __repr__(self):
         args = ", ".join(
