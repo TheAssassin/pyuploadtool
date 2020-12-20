@@ -7,10 +7,10 @@ jobs:
     name: Quality Assurance
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
           python3 -m pip install poetry
-          ls -alF
           python3 -m poetry install
       - name: Check code formatting with black
         run: python3 -m poetry run black --check pyuploadtool/
