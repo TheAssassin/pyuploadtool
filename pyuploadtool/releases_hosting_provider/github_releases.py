@@ -46,8 +46,8 @@ class GitHubReleases(ReleasesHostingProviderBase):
 
                 else:
                     raise ReleaseHostingProviderError(
-                        f"refusing to create continuous release for non-default branch {metadata.branch} "
-                        f"(build type {metadata.build_type})"
+                        f'refusing to create continuous release for non-default branch "{metadata.branch}" '
+                        f'(build type {metadata.build_type}, default branch "{repo.default_branch}")'
                     )
 
             self.logger.warning("push to default branch, creating continuous release")
