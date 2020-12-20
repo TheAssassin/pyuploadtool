@@ -3,8 +3,19 @@ name: Continuous release
 on: push
 
 jobs:
+  qa:
+    name: Quality Assurance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: python3 -m pip install -e .
+      - name: Check code formatting with black
+        run: python3 -m black --check pyuploadtool/
+
   build-appimage:
     name: Build AppImage
+    needs:
+      - qa
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
