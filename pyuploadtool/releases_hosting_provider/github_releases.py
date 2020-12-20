@@ -41,8 +41,11 @@ class GitHubReleases(ReleasesHostingProviderBase):
                     return
 
             else:
-                if metadata.branch is None or metadata.branch != repo.default_branch:
+                if not metadata.branch:
                     metadata.branch = repo.default_branch
+
+                elif metadata.branch == repo.default_branch:
+                    pass
 
                 else:
                     raise ReleaseHostingProviderError(
