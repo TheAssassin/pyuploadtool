@@ -26,12 +26,12 @@ class GitHubActions(BuildSystemBase):
     def from_environment(cls):
         try:
             repository = os.environ["GITHUB_REPOSITORY"]
-            run_id = os.environ["GITHUB_RUN_ID"]
+            run_id = int(os.environ["GITHUB_RUN_ID"])
             event_name = os.environ["GITHUB_EVENT_NAME"]
             ref = os.environ["GITHUB_REF"]
             sha = os.environ["GITHUB_SHA"]
             workflow = os.environ["GITHUB_WORKFLOW"]
-            run_number = os.environ["GITHUB_RUN_NUMBER"]
+            run_number = int(os.environ["GITHUB_RUN_NUMBER"])
 
         except KeyError as e:
             raise BuildSystemError(f"Could not find environment variable ${e.args[0]}")
