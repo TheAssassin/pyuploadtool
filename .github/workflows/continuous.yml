@@ -8,9 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
-        run: python3 -m pip install -e .
+        run: |
+          python3 -m pip install poetry
+          python3 -m poetry install
       - name: Check code formatting with black
-        run: python3 -m black --check pyuploadtool/
+        run: python3 -m poetry run black --check pyuploadtool/
 
   build-appimage:
     name: Build AppImage
