@@ -31,12 +31,24 @@ class GitHubReleases(ReleasesHostingProviderBase):
         prerelease = False
 
         # fallback values (for continuous release setup)
-        if metadata.build_type == BuildType.PUSH:
-            if metadata.branch != repo.default_branch:
-                self.logger.warning(
-                    f'not creating release for branch "{metadata.branch}" as it is not the default branch "{repo.default_branch}"'
-                )
-                return
+        if metadata.build_type in [BuildType.SCHEDULED, BuildType.MANUAL, BuildType.PUSH]:
+            if metadata.build_type == BuildType.PUSH:
+                if metadata.branch != repo.default_branch:
+                    self.logger.warning(
+                        f'not creating release for branch "{metadata.branch}" as it is not the default branch '
+                        f'"{repo.default_branch}"'
+                    )
+                    return
+
+            else:
+                if metadata.branch is None or metadata.branch != repo.default_branch:
+                    metadata.branch = repo.default_branch
+
+                else:
+                    raise ReleaseHostingProviderError(
+                        f"refusing to create continuous release for non-default branch {metadata.branch} "
+                        f"(build type {metadata.build_type})"
+                    )
 
             self.logger.warning("push to default branch, creating continuous release")
 

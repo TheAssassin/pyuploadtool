@@ -13,3 +13,9 @@ class BuildType(Enum):
 
     # a pull request (merge request, ...) is being built
     PULL_REQUEST = 3
+
+    # a scheduled event, e.g., triggered periodically
+    SCHEDULED = 4
+
+    # manual build, triggered by the user
+    MANUAL = 5

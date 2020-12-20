@@ -64,3 +64,7 @@ class GitHubActions(BuildSystemBase):
             metadata.build_type = BuildType.PULL_REQUEST
         if event_name == "push":
             metadata.build_type = BuildType.PUSH
+        if event_name == "schedule":
+            metadata.build_type = BuildType.SCHEDULED
+        if event_name in ["workflow_dispatch", "repository_dispatch"]:
+            metadata.build_type = BuildType.MANUAL
