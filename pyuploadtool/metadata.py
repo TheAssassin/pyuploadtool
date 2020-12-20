@@ -68,7 +68,7 @@ class ReleaseMetadata:
     def __repr__(self):
         args = ", ".join(
             (
-                f'{i}="{getattr(self, i)}"'
+                f"{i}={repr(getattr(self, i))}"
                 for i in (
                     "tag",
                     "branch",
