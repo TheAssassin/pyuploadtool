@@ -24,7 +24,7 @@ The tool can easily upload files to *GitHub releases* if you make the `GITHUB_TO
 
 An example pipeline step look like this:
 
-```
+```yaml
       - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -38,7 +38,7 @@ If you want to upload to WebDAV, too, you could use the following step:
 
 An example pipeline step look like this:
 
-```
+```yaml
       - name: Create release and upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
