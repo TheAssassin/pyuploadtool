@@ -44,7 +44,7 @@ class WebDAV(ReleasesHostingProviderBase):
         def sanitize(s):
             out = []
 
-            for i in s:
+            for i in str(s):
                 if i in string.ascii_letters + string.digits + "_- ":
                     out.append(i)
                 else:
