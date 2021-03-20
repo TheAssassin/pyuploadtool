@@ -85,3 +85,16 @@ You can upload to any WebDAV server which supports `PUT` operations. The followi
 - `$WEBDAV_RELEASE_NAME`: name of the release directory (optional on *GitHub actions*)
 
 **Note:** Secrets must not be stored inside the repository, nor be visible to end users. You need to store them securely, ideally using the credentials storage your build system provides (on GitHub actions, there's *Secrets*, for instance).
+
+
+## Changelog Generation
+`pyuploadtool` support Changelog generation, which is optional, and can be enabled with the `$CHANGELOG_GENERATE` environment variable.
+```bash
+CHANGELOG_GENERATE=true ./pyuploadtool*.AppImage
+```
+### Changelog Types
+`pyuploadtool` currently supports two types of Changelogs.
+* `CHANGELOG_TYPE=STANDARD` or `CHANGELOG_TYPE=0`, Standard Changelog, (Default)
+* `CHANGELOG_TYPE=CONVENTIONAL` or `CHANGELOG_TYPE=1`, Conventional changelog, follows the [Conventional Commit Spec](https://www.conventionalcommits.org/) which classifies your commits as Features, Bug Fixes, etc, provided your commits follow the spec.
+
+By default, `CHANGELOG_TYPE` is `STANDARD` unless explictly specified.
