@@ -46,7 +46,7 @@ class GitHubActions(BuildSystemBase):
         if branch_match:
             metadata.branch = branch_match.group(1)
 
-        metadata.build_log_url = f"https://github.com/{self.repository}/runs/{self.run_id}"
+        metadata.build_log_url = f"https://github.com/{self.repository}/actions/runs/{self.run_id}"
         metadata.unique_build_id = str(self.run_id)
         metadata.repository_slug = self.repository
         metadata.commit = self.commit
