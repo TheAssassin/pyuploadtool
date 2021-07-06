@@ -56,13 +56,20 @@ class GitHubActions(BuildSystemBase):
         event_name = self.event_name.lower()
 
         # the create event can occur whenever a tag or branch is created
-        if event_name == "create" and metadata.tag:
-            metadata.build_type = BuildType.TAG
         if event_name == "pull_request":
             metadata.build_type = BuildType.PULL_REQUEST
-        if event_name == "push":
-            metadata.build_type = BuildType.PUSH
-        if event_name == "schedule":
+
+        elif event_name == "push":
+            if metadata.tag:
+                metadata.build_type = BuildType.TAG
+            else:
+                metadata.build_type = BuildType.PUSH
+
+        elif event_name == "schedule":
             metadata.build_type = BuildType.SCHEDULED
-        if event_name in ["workflow_dispatch", "repository_dispatch"]:
+
+        elif event_name in ["workflow_dispatch", "repository_dispatch"]:
             metadata.build_type = BuildType.MANUAL
+
+        else:
+            raise BuildSystemError("Could not detect build type or build type is unsupported")
