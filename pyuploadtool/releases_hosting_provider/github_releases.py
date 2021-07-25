@@ -55,7 +55,7 @@ class GitHubReleases(ReleasesHostingProviderBase):
             self.logger.warning("push to default branch, creating continuous release")
 
             # not using "latest", as this value is reserved by GitHub
-            metadata.tag = "continuous"
+            metadata.tag = os.getenv("GITHUB_CONTINUOUS_RELEASE_TAG", "continuous")
             metadata.release_name = "Continuous build"
             prerelease = True
 
