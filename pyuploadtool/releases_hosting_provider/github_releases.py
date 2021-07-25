@@ -56,7 +56,7 @@ class GitHubReleases(ReleasesHostingProviderBase):
 
             # not using "latest", as this value is reserved by GitHub
             metadata.tag = os.getenv("GITHUB_CONTINUOUS_RELEASE_TAG", "continuous")
-            metadata.release_name = "Continuous build"
+            metadata.release_name = os.getenv("GITHUB_CONTINUOUS_RELEASE_NAME", "Continuous build")
             prerelease = True
 
         elif metadata.build_type == BuildType.PULL_REQUEST:
