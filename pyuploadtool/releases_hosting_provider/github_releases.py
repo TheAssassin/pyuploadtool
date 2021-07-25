@@ -1,11 +1,17 @@
 import os
 
+from enum import Enum
 from github import Github, UnknownObjectException
 
 from . import ReleaseHostingProviderError
 from .base import ReleasesHostingProviderBase
 from .. import ReleaseMetadata, BuildType
 from ..logging import make_logger
+
+
+class GitHubReleaseTypes(Enum):
+    STABLE = "stable"
+    PRERELEASE = "prerelease"
 
 
 class GitHubReleases(ReleasesHostingProviderBase):
@@ -57,7 +63,10 @@ class GitHubReleases(ReleasesHostingProviderBase):
             # not using "latest", as this value is reserved by GitHub
             metadata.tag = os.getenv("GITHUB_CONTINUOUS_RELEASE_TAG", "continuous")
             metadata.release_name = os.getenv("GITHUB_CONTINUOUS_RELEASE_NAME", "Continuous build")
-            prerelease = True
+            prerelease = (
+                os.getenv("GITHUB_CONTINUOUS_RELEASE_TYPE", GitHubReleaseTypes.PRERELEASE.value)
+                == GitHubReleaseTypes.PRERELEASE.value
+            )
 
         elif metadata.build_type == BuildType.PULL_REQUEST:
             self.logger.warning("not creating release as this is a pull request build")
