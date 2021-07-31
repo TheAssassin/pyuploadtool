@@ -77,7 +77,9 @@ class GitHubReleases(ReleasesHostingProviderBase):
             # not using "latest", as this value is reserved by GitHub
             metadata.tag = os.getenv("GITHUB_CONTINUOUS_RELEASE_TAG", "continuous")
             metadata.release_name = os.getenv("GITHUB_CONTINUOUS_RELEASE_NAME", "Continuous build")
-            prerelease = GitHubReleaseTypes.is_prerelease(os.getenv("GITHUB_CONTINUOUS_RELEASE_TYPE", GitHubReleaseTypes.PRERELEASE.value))
+            prerelease = GitHubReleaseTypes.is_prerelease(
+                os.getenv("GITHUB_CONTINUOUS_RELEASE_TYPE", GitHubReleaseTypes.PRERELEASE.value)
+            )
 
         elif metadata.build_type == BuildType.PULL_REQUEST:
             self.logger.warning("not creating release as this is a pull request build")
