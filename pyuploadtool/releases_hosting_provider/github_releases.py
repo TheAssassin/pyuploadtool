@@ -20,7 +20,7 @@ class GitHubReleaseTypes(Enum):
     @staticmethod
     def validate(release_type: str) -> None:
         if release_type not in (release.value for release in GitHubReleaseTypes):
-            raise InvalidGitHubReleaseType
+            raise InvalidGitHubReleaseTypeError()
 
     @staticmethod
     def is_prerelease(release_type: str) -> bool:
