@@ -9,7 +9,7 @@ from .. import ReleaseMetadata, BuildType
 from ..logging import make_logger
 
 
-class InvalidGitHubReleaseType(ValueError):
+class InvalidGitHubReleaseTypeError(ValueError):
     pass
 
 
