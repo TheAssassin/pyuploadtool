@@ -1,11 +1,31 @@
 import os
 
+from enum import Enum
 from github import Github, UnknownObjectException
 
 from . import ReleaseHostingProviderError
 from .base import ReleasesHostingProviderBase
 from .. import ReleaseMetadata, BuildType
 from ..logging import make_logger
+
+
+class InvalidGitHubReleaseTypeError(ValueError):
+    pass
+
+
+class GitHubReleaseTypes(Enum):
+    STABLE = "stable"
+    PRERELEASE = "prerelease"
+
+    @staticmethod
+    def validate(release_type: str) -> None:
+        if release_type not in (release.value for release in GitHubReleaseTypes):
+            raise InvalidGitHubReleaseTypeError()
+
+    @staticmethod
+    def is_prerelease(release_type: str) -> bool:
+        GitHubReleaseTypes.validate(release_type)
+        return release_type == GitHubReleaseTypes.PRERELEASE.value
 
 
 class GitHubReleases(ReleasesHostingProviderBase):
@@ -55,9 +75,11 @@ class GitHubReleases(ReleasesHostingProviderBase):
             self.logger.warning("push to default branch, creating continuous release")
 
             # not using "latest", as this value is reserved by GitHub
-            metadata.tag = "continuous"
-            metadata.release_name = "Continuous build"
-            prerelease = True
+            metadata.tag = os.getenv("GITHUB_CONTINUOUS_RELEASE_TAG", "continuous")
+            metadata.release_name = os.getenv("GITHUB_CONTINUOUS_RELEASE_NAME", "Continuous build")
+            prerelease = GitHubReleaseTypes.is_prerelease(
+                os.getenv("GITHUB_CONTINUOUS_RELEASE_TYPE", GitHubReleaseTypes.PRERELEASE.value)
+            )
 
         elif metadata.build_type == BuildType.PULL_REQUEST:
             self.logger.warning("not creating release as this is a pull request build")

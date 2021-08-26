@@ -74,6 +74,13 @@ An example pipeline step look like this:
 
 Uploading data on GitHub releases is currently supported out of the box with *GitHub actions*.
 
+By default, the release is marked as Stable for tags, and Prerelease for continuous builds, which are released with the tag name `continuous`. It is possible to override
+the tag name and release type, with the following environment variables:
+
+- `GITHUB_CONTINUOUS_RELEASE_TYPE`: type of release to be published. (supported values: `stable`, `prerelease`, default: `stable` for tags, `prerelease` otherwise)
+- `GITHUB_CONTINUOUS_RELEASE_NAME`: The title of the release (default: "Continuous Build")
+- `GITHUB_CONTINUOUS_RELEASE_TAG`: The tag used for release (default: `continuous`)
+
 
 ### WebDAV
 
