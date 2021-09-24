@@ -2,6 +2,7 @@
 Commandline interface.
 """
 
+import os
 import sys
 
 
@@ -23,6 +24,11 @@ artifacts = sys.argv[1:]
 if not artifacts:
     logger.error(f"Usage: {sys.argv[0]} <file> [<another file>...]")
     sys.exit(1)
+
+
+for artifact in artifacts:
+    if not os.path.exists(artifact):
+        raise FileNotFoundError(artifact)
 
 
 def get_metadata():
