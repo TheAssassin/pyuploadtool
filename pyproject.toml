@@ -12,7 +12,7 @@ homepage = "https://github.com/TheAssassin/pyuploadtool"
 repository = "https://github.com/TheAssassin/pyuploadtool"
 
 [tool.poetry.dependencies]
-python = "^3.6.0"
+python = "^3.6.2"
 pygithub = "^1.54"
 coloredlogs = "^14"
 requests = "^2.0"
