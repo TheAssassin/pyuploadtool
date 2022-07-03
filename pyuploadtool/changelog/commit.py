@@ -18,6 +18,7 @@ class ChangelogEntry:
         ChangelogEntry instance
         """
         author = Author(name=commit.author.name, email=commit.author.email)
-        message = commit.commit.message
+        # only get the first line of the commit
+        message = commit.commit.message.split("\n")[0]
         sha = commit.sha
         return ChangelogEntry(author=author, message=message, sha=sha)
