@@ -20,10 +20,11 @@ class MarkdownChangelogParser(ChangelogParser):
                 markdown_changelog.append(f"## {self.changelog.structure().get(spec)}")
 
             for commit in self.changelog[spec]:
+                commit_link_text = commit.author.name if commit.author.name is not None else commit.sha[:7]
                 if self.commit_link_prefix:
-                    author = f"([{commit.author.name}]({self.commit_link_prefix}/{commit.sha}))"
+                    author = f"([{commit_link_text}]({self.commit_link_prefix}/{commit.sha}))"
                 else:
-                    author = f"({commit.author.name})"
+                    author = f"({commit_link_text})"
 
                 markdown_changelog.append(f"* {commit.message} {author}")
 
