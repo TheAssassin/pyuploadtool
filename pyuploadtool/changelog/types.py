@@ -14,13 +14,13 @@ class ChangelogType(Enum):
 
     @staticmethod
     def from_environment():
+        # not set or set to empty value should default to NONE
+
         type = os.getenv("CHANGELOG_TYPE")
-        if type is None:
-            return ChangelogType.STANDARD
 
-        for i in ChangelogType:
-            if type.isdigit() and int(type) == i.value or type.lower() == i.name.lower():
-                return i
+        if type:
+            for i in ChangelogType:
+                if type.isdigit() and int(type) == i.value or type.lower() == i.name.lower():
+                    return i
 
-        # fall back to the default
         return ChangelogType.NONE
