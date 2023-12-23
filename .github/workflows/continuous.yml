@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   qa:
     name: Quality Assurance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
@@ -19,7 +19,7 @@ jobs:
     name: Build AppImage
     needs:
       - qa
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Build AppImage
