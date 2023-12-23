@@ -3,7 +3,7 @@ line-length = 120
 
 [tool.poetry]
 name = "pyuploadtool"
-version = "0.0.1"
+version = "20231223-1"
 description = "A simple tool to upload artifacts to GitHub releases"
 authors = ["TheAssassin <theassassin@assassinate-you.net>"]
 license = "MIT"
