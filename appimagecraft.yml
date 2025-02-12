@@ -31,6 +31,9 @@ scripts:
       # also makes using bundled shellcheck easier
       export PATH="$PATH":"$this_dir"/usr/bin
 
+      # disable legacy cryptography
+      export CRYPTOGRAPHY_OPENSSL_NO_LEGACY=1
+
       "$this_dir"/usr/bin/python -m pyuploadtool "$@"
       EOF
     - chmod +x AppRun.sh
