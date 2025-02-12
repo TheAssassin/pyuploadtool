@@ -16,8 +16,8 @@ repository = "https://github.com/TheAssassin/pyuploadtool"
 line-length = 120
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
-pygithub = "^1.54"
+python = "^3.12.0"
+pygithub = "^2.5.0"
 coloredlogs = "^14"
 requests = "^2.0"
 
