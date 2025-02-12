@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   qa:
     name: Quality Assurance
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
@@ -19,11 +19,12 @@ jobs:
     name: Build AppImage
     needs:
       - qa
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build AppImage
         run: |
+            export APPIMAGE_EXTRACT_AND_RUN=1
             wget https://github.com/TheAssassin/appimagecraft/releases/download/continuous/appimagecraft-x86_64.AppImage
             chmod +x appimagecraft-x86_64.AppImage
             ./appimagecraft-x86_64.AppImage
@@ -37,7 +38,7 @@ jobs:
     name: Create release and upload artifacts
     needs:
       - build-appimage
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -49,4 +50,5 @@ jobs:
         run: |
             cd AppImage
             chmod +x pyuploadtool-x86_64.AppImage
+            export APPIMAGE_EXTRACT_AND_RUN=1
             ./pyuploadtool-x86_64.AppImage pyuploadtool-x86_64.AppImage
