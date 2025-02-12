@@ -1,15 +1,19 @@
-[tool.black]
-line-length = 120
-
-[tool.poetry]
+[project]
 name = "pyuploadtool"
 version = "20231223-1"
 description = "A simple tool to upload artifacts to GitHub releases"
-authors = ["TheAssassin <theassassin@assassinate-you.net>"]
+authors = [
+    { name = "TheAssassin", email = "theassassin@assassinate-you.net" }
+]
 license = "MIT"
 readme = "README.md"
+
+[tool.poetry]
 homepage = "https://github.com/TheAssassin/pyuploadtool"
 repository = "https://github.com/TheAssassin/pyuploadtool"
+
+[tool.black]
+line-length = 120
 
 [tool.poetry.dependencies]
 python = "^3.6.2"
@@ -25,6 +29,5 @@ flake8 = "*"
 pyuploadtool = 'pyuploadtool:__main__'
 
 [build-system]
-# pinning to work around https://github.com/python-poetry/poetry/issues/3153
-requires = ["poetry-core==1.0"]
+requires = ["poetry-core>=1.0"]
 build-backend = "poetry.core.masonry.api"
