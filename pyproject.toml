@@ -16,7 +16,7 @@ line-length = 120
 [tool.poetry.dependencies]
 python = "^3.12.0"
 pygithub = "^2.5.0"
-coloredlogs = "^14"
+coloredlogs = "^15"
 requests = "^2.0"
 
 [tool.poetry.dev-dependencies]
