@@ -1,14 +1,12 @@
-[project]
+[tool.poetry]
 name = "pyuploadtool"
 version = "20231223-1"
 description = "A simple tool to upload artifacts to GitHub releases"
 authors = [
-    { name = "TheAssassin", email = "theassassin@assassinate-you.net" }
+    "TheAssassin <theassassin@assassinate-you.net>"
 ]
 license = "MIT"
 readme = "README.md"
-
-[tool.poetry]
 homepage = "https://github.com/TheAssassin/pyuploadtool"
 repository = "https://github.com/TheAssassin/pyuploadtool"
 
