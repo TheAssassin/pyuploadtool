@@ -15,11 +15,11 @@ class ReleasesHostingProviderFactory:
         # TODO: support more than one provider at a time
         cls.logger.info("guessing releases hosting provider from environment variables")
 
-        if "WEBDAV_URL" in os.environ:
+        if os.getenv("WEBDAV_URL", None):
             cls.logger.info("detected WebDAV")
             providers.append(WebDAV.from_environment())
 
-        if "GITHUB_TOKEN" in os.environ:
+        if os.getenv("GITHUB_TOKEN", None):
             cls.logger.info("detected GitHub releases")
             providers.append(GitHubReleases.from_environment())
 
