@@ -21,14 +21,22 @@ class WebDAV(ReleasesHostingProviderBase):
 
     @staticmethod
     def from_environment():
+        def get_value(variable):
+            value = os.environ[variable]
+
+            if not value:
+                raise KeyError(f'No value set for environment variable "{variable}"')
+
+            return value
+
         try:
-            url = os.environ["WEBDAV_URL"]
-            user = os.environ["WEBDAV_USER"]
-            password = os.environ["WEBDAV_PASSWORD"]
+            url = get_value("WEBDAV_URL")
+            user = get_value("WEBDAV_USER")
+            password = get_value("WEBDAV_PASSWORD")
 
             # optional features
             try:
-                release_name = os.environ["WEBDAV_RELEASE_NAME"]
+                release_name = get_value("WEBDAV_RELEASE_NAME")
             except KeyError:
                 release_name = None
 
