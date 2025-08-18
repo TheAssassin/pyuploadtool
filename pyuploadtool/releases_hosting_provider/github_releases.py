@@ -38,10 +38,10 @@ class GitHubReleases(ReleasesHostingProviderBase):
         # using dependency injection to allow for easier testing
         self.github_client = github_client
 
-    @staticmethod
-    def from_environment():
+    @classmethod
+    def from_environment(cls):
         try:
-            github_client = Github(os.environ["GITHUB_TOKEN"])
+            github_client = Github(cls.get_environment_variable("GITHUB_TOKEN"))
         except KeyError as e:
             raise ReleaseHostingProviderError(f"could not find required environment variable: {e.args[0]}")
 
