@@ -12,7 +12,6 @@ class ReleasesHostingProviderFactory:
     def from_environment(cls) -> List[ReleasesHostingProviderBase]:
         providers = []
 
-        # TODO: support more than one provider at a time
         cls.logger.info("guessing releases hosting provider from environment variables")
 
         if os.getenv("WEBDAV_URL", None):
