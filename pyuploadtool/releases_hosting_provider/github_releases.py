@@ -170,6 +170,8 @@ class GitHubReleases(ReleasesHostingProviderBase):
         # for some annoying reason, you have to re-provide all options
         release.update_release(draft=False, **release_data)
 
+        self.logger.info(f"release URL: {release.html_url}")
+
     @property
     def name(self):
         return "GitHub Releases"
