@@ -7,7 +7,7 @@ jobs:
     name: Quality Assurance
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Install dependencies
         run: |
           python3 -m pip install poetry
@@ -21,7 +21,7 @@ jobs:
       - qa
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Build AppImage
         run: |
             export APPIMAGE_EXTRACT_AND_RUN=1
