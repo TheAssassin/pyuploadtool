@@ -2,7 +2,6 @@ from typing import Type
 
 from .. import ChangelogType, Changelog, ConventionalCommitChangelog
 
-
 SUPPORTED_CHANGELOG_TYPES = {ChangelogType.STANDARD: Changelog, ChangelogType.CONVENTIONAL: ConventionalCommitChangelog}
 
 
