@@ -537,14 +537,14 @@ files = [
 
 [[package]]
 name = "pygithub"
-version = "2.8.1"
+version = "2.9.0"
 description = "Use the full Github API v3"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "pygithub-2.8.1-py3-none-any.whl", hash = "sha256:23a0a5bca93baef082e03411bf0ce27204c32be8bfa7abc92fe4a3e132936df0"},
-    {file = "pygithub-2.8.1.tar.gz", hash = "sha256:341b7c78521cb07324ff670afd1baa2bf5c286f8d9fd302c1798ba594a5400c9"},
+    {file = "pygithub-2.9.0-py3-none-any.whl", hash = "sha256:5e2b260ce327bffce9b00f447b65953ef7078ffe93e5a5425624a3075483927c"},
+    {file = "pygithub-2.9.0.tar.gz", hash = "sha256:a26abda1222febba31238682634cad11d8b966137ed6cc3c5e445b29a11cb0a4"},
 ]
 
 [package.dependencies]
@@ -688,4 +688,4 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12.0"
-content-hash = "dbe0e3e96b31e2bcbe78c46d92746eb6156632a937afe2b8d6300b9dff5af583"
+content-hash = "4f6b508d7afa49e1f356f49a1bbc56f6dcc2d7666256cc0f58e5d86df8ab4132"
