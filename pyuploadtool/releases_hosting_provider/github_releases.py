@@ -98,21 +98,32 @@ class GitHubReleases(ReleasesHostingProviderBase):
         else:
             raise ReleaseHostingProviderError(f"unsupported build type: {metadata.build_type}")
 
-        # recreate existing tag if it has the same name but is based on a different commit
+        release = None
+        for existing_release in repo.get_releases():
+            if existing_release.tag_name != metadata.tag:
+                continue
+            # in case we have multiple jobs build and upload in parallel, the release may already have been created by
+            # one job
+            # therefore, we want to make sure we only (re)create the release if it is not based on the commit we're
+            # processing right now
+            if existing_release.target_commitish == metadata.commit and release is None:
+                self.logger.info(
+                    f'found an existing release called "{metadata.release_name}" for commit "{metadata.commit}"'
+                )
+                release = existing_release
+            else:
+                self.logger.warning(f"deleting existing release for tag {metadata.tag}")
+                existing_release.delete_release()
+
+        # delete and later recreate existing tag if it has the same name but is based on a different commit
         # this usually happens with continuous releases
-        # deleting the tag is safe in this case
+        # deleting the tag **after** deleting the release is safe in this case
         for existing_tag in repo.get_tags():
             if existing_tag.name == metadata.tag and existing_tag.commit.sha != metadata.commit:
                 self.logger.warning(f"recreating tag {metadata.tag} for commit {metadata.commit}")
-
                 self.logger.debug(f"deleting tag {existing_tag.name}")
                 existing_tag_ref = repo.get_git_ref(f"tags/{existing_tag.name}")
                 existing_tag_ref.delete()
-
-        try:
-            release = repo.get_release(metadata.tag)
-        except UnknownObjectException:
-            release = None
 
         message = f"Build log: {metadata.build_log_url}"
 
@@ -136,20 +147,6 @@ class GitHubReleases(ReleasesHostingProviderBase):
             prerelease=prerelease,
             target_commitish=metadata.commit,
         )
-
-        # in case we have multiple jobs build and upload in parallel, the release may already have been created by
-        # one job
-        # therefore, we want to make sure we only (re)create the release if it is not based on the commit we're
-        # processing right now
-        if release is not None:
-            if release.target_commitish == metadata.commit:
-                self.logger.info(
-                    f'found an existing release called "{metadata.release_name}" for commit "{metadata.commit}"'
-                )
-            else:
-                self.logger.warning(f"deleting existing release for tag {metadata.tag}")
-                release.delete_release()
-                release = None
 
         if release is None:
             self.logger.info(f'drafting new release "{metadata.release_name}" for tag "{metadata.tag}"')
